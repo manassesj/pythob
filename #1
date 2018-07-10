@@ -1,60 +1,205 @@
 class nodo():
-    
+
     def __init__(self,dado):
         self.dado = dado
-        self.next = None
+        self.pai = None
+        self.left = None
+        self.right = None
+        self.cor = None
 
-class fila():
-    
+class arvore():
+
     def __init__(self):
-        self.first = None
-        self.last = None
-    
-    def inserir(self,dado):
-        novo = nodo(dado)
+        self.vazio = nodo(None)
+        self.vazio.cor = "black"
+        self.vazio.pai = self.vazio
+        self.vazio.left = self.vazio
+        self.vazio.right = self.vazio
+        self.raiz = self.vazio
+
         
-        if self.first == None and self.last == None:
-            self.first = self.last = novo
+    def rodar_left(self,x):
+        y = x.right
+        x.right = y.left
+        if y.left != self.vazio:
+            y.left.pai = x
+        y.pai = x.pai
+
+        if x.pai == self.vazio:
+            self.raiz = y
+        elif x == x.pai.left:
+            x.pai.left= y
         else:
-            
-            self.last.next = novo
-            self.last = novo
-    def remover(self):
-        if self.first == self.last:
-            self.first = self.last = None
-        else:            
-            self.first = self.first.next
-        
+            x.pai.right = y
+        y.left = x
+        x.pai = y
 
-x = int(input())
+    def rodar_right(self,x):
+            y = x.left
+            x.left = y.right
+            if y.right != self.vazio:
+                y.right.pai = x
+            y.pai = x.pai
 
-for a in range(x):
-    lista = [None]*2
-    lista[0] = fila()
-    lista[1] = fila()
-    y = int(input())
+            if x.pai == self.vazio:
+                self.raiz = y
+            elif x == x.pai.right:
+                x.pai.right= y
+            else:
+                x.pai.left = y
+            y.right = x
+            x.pai = y
+
+
+
+    def rb_inserir(self,z):
+
+        while z.pai.cor == "red":
+            if z.pai == z.pai.pai.left:
+                y = z.pai.pai.right
+                if y.cor == "red":
+                    z.pai.cor = "black"
+                    y.cor = "black"
+                    z.pai.pai.cor = "red"
+                    z = z.pai.pai
+                else:
+                    if z == z.pai.right:
+                        z = z.pai
+                        self.rodar_left(z)
+                    z.pai.cor = "black"
+                    z.pai.pai.cor = "red"
+                    self.rodar_right(z.pai.pai)
+            else:
+                y = z.pai.pai.left
+                if y.cor == "red":
+                    z.pai.cor = "black"
+                    y.cor = "black"
+                    z.pai.pai.cor = "red"
+                    z = z.pai.pai
+                else:
+                    if z == z.pai.left:
+                        z = z.pai
+                        self.rodar_right(z)
+                    z.pai.cor = "black"
+                    z.pai.pai.cor = "red"
+                    self.rodar_left(z.pai.pai)
+        self.raiz.cor = "black"
     
-    for b in range(y):
-        entrada = input().split()
+    def rb_trans(u,v):
+        if u.pai == self.vazio:
+            self.raiz = v
+        elif u == u.pai.left:
+            u.pai.left = v
+        else:
+            u.pai.right = v
+        v.pai = u.pai
+    
+    def inserir(self,n):
+        novo = nodo(n)
+        y = self.vazio
+        x = self.raiz
+
+        while x != self.vazio:
+            y = x
+            if novo.dado < x.dado:
+                x = x.left
+            else:
+                x = x.right
+        novo.pai = y
+
+        if y == self.vazio:
+            self.raiz = novo
+            self.raiz.pai = self.vazio
+            self.raiz.left = self.vazio
+            self.raiz.right = self.vazio
+        elif novo.dado < y.dado:  
+            y.left = novo
+            novo.left = self.vazio
+            novo.right = self.vazio
+            novo.cor = "red"
+        else:
+            y.right = novo
+            novo.left = self.vazio
+            novo.right = self.vazio
+            novo.cor = "red"
+        self.rb_inserir(novo)
         
-        if entrada[0] == "f" or entrada[0] == "p":
-            if entrada[0] == "f":
-                if lista[0].first != None and lista[1].first == None:
-                    lista[1].inserir(entrada[1])
-                else:
-                    lista[0].inserir(entrada[1])
+    def remover(self,z):
+        y = z
+        if  z.left == self.vazio:
+            x = z.right
+            self.rb_tras(z,z.right)
+        elif z.right == self.vazio:
+            x = z.left
+            self.rb_tran(z,zleft)
+        else:
+            self.rb_trans(y,y.right)
+            x = y.right
+            if y.pai == z:
+                x.pai = y
             else:
-                if lista[1].first != None and lista[0].first == None:
-                    lista[0].inserir(entrada[1])
-                else:
-                    lista[1].inserir(entrada[1])
+                rb_trans(y,y.right)
+                y.right = z.right
+                y.right.pai = y
+            rb_trans(z,y)
+            y.left = z.left
+            y.left.pai = y
+            y.cor = z.cor
+        if y == "black":
+            self.rb_remover(x)
                 
-        if entrada[0] == "A" or entrada[1] == "B":
-            if entrada[0] == "A":
-                if lista[0].first != None:
-                    lista[0].remover()
-            else:
-                if lista[1].first != None:
-                    lista[1].remover()
+    
+    def rb_remover(x):
+        while x != self.raiz and x.cor == "black":
+            if x == x.pai.left:
+                w = x.pai.right
+                if w.cor == "red":
+                    w.cor "black"
+                    x.pai.cor = "red"
+                    self.rodar_left(x.pai)
+                    w = x.pai.right
+                if w.left.cor == "black" and w.right.cor == "black":
+                    w.cor = "red"
+                    x = x.pai
+                else:
+                    if w.right.cor == "black":
+                        w.left.cor = "black"
+                        w.cor = "red"
+                        self.rodar_right(w)
+                        w = x.pai.right
+                    w.cor = x.pai.cor
+                    x.pai.cor = "black"
+                    w.right.cor = "black"
+                    self.rodar_left(x.pai)
+                    x = self.raiz
                     
-            
+            else:
+                w = x.pai.left
+                if w.cor == "red":
+                    w.cor "black"
+                    x.pai.cor = "red"
+                    self.rodar_right(x.pai)
+                    w = x.pai.left
+                if w.right.cor == "black" and w.left.cor == "black":
+                    w.cor = "red"
+                    x = x.pai
+                else:
+                    if w.left.cor == "black":
+                        w.right.cor = "black"
+                        w.cor = "red"
+                        self.rodar_left(w)
+                        w = x.pai.left
+                    w.cor = x.pai.cor
+                    x.pai.cor = "black"
+                    w.left.cor = "black"
+                    self.rodar_right(x.pai)
+                    x = self.raiz
+        x.cor = "black"
+                
+    
+a = arvore()
+
+a.inserir(7)
+a.inserir(5)
+a.inserir(6)
+
