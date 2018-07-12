@@ -85,7 +85,7 @@ class arvore():
                     self.rodar_left(z.pai.pai)
         self.raiz.cor = "black"
     
-    def rb_trans(u,v):
+    def rb_trans(self,u,v):
         if u.pai == self.vazio:
             self.raiz = v
         elif u == u.pai.left:
@@ -109,52 +109,54 @@ class arvore():
 
         if y == self.vazio:
             self.raiz = novo
-            self.raiz.pai = self.vazio
+            """self.raiz.pai = self.vazio
             self.raiz.left = self.vazio
-            self.raiz.right = self.vazio
+            self.raiz.right = self.vazio"""
         elif novo.dado < y.dado:  
             y.left = novo
-            novo.left = self.vazio
+            """novo.left = self.vazio
             novo.right = self.vazio
-            novo.cor = "red"
+            novo.cor = "red"  """
         else:
             y.right = novo
-            novo.left = self.vazio
-            novo.right = self.vazio
-            novo.cor = "red"
+        novo.left = self.vazio
+        novo.right = self.vazio
+        novo.cor = "red"
         self.rb_inserir(novo)
         
     def remover(self,z):
         y = z
+        y_original_cor = z.cor
         if  z.left == self.vazio:
             x = z.right
-            self.rb_tras(z,z.right)
+            self.rb_trans(z,z.right)
         elif z.right == self.vazio:
             x = z.left
-            self.rb_tran(z,zleft)
+            self.rb_trans(z,z.left)
         else:
-            self.rb_trans(y,y.right)
+            y = self.minimo(z.right)
+            y_original_cor = y.cor
             x = y.right
             if y.pai == z:
                 x.pai = y
             else:
-                rb_trans(y,y.right)
+                self.rb_trans(y,y.right)
                 y.right = z.right
                 y.right.pai = y
-            rb_trans(z,y)
+            self.rb_trans(z,y)
             y.left = z.left
             y.left.pai = y
             y.cor = z.cor
-        if y == "black":
+        if y_original_cor == "black":
             self.rb_remover(x)
                 
     
-    def rb_remover(x):
+    def rb_remover(self,x):
         while x != self.raiz and x.cor == "black":
             if x == x.pai.left:
                 w = x.pai.right
                 if w.cor == "red":
-                    w.cor "black"
+                    w.cor = "black"
                     x.pai.cor = "red"
                     self.rodar_left(x.pai)
                     w = x.pai.right
@@ -176,7 +178,7 @@ class arvore():
             else:
                 w = x.pai.left
                 if w.cor == "red":
-                    w.cor "black"
+                    w.cor = "black"
                     x.pai.cor = "red"
                     self.rodar_right(x.pai)
                     w = x.pai.left
