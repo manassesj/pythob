@@ -1,0 +1,122 @@
+from math import inf
+
+
+class nodo():
+
+    def __init__(self, chave):
+        self.chave = chave
+        self.distancia = None
+        self.lista_nos = []
+        self.pesos = []
+
+    def set_lista_nos(self, n, peso):
+        self.lista_nos.append(None)
+        for x in lista:
+            if x.chave == n:
+                self.lista_nos[-1] = x
+        self.pesos.append(peso)
+
+
+class nodo_q():
+
+    def __init__(self):
+        self.chave = None
+        self.next = None
+        self.ant = None
+
+
+class lista_q():
+
+    def __init__(self):
+        self.first = None
+        self.last = None
+
+    def inserir(self, n):
+        novo = nodo_q()
+        novo.chave = lista[n]
+        if self.first == None and self.last == None:
+            self.first = self.last = novo
+        else:
+            novo.ant = self.last
+            self.last.next = novo
+            self.last = novo
+
+    def menor(self):
+        n = self.first
+        atual = self.first
+
+        while atual != None:
+            if atual.chave.distancia < n.chave.distancia:
+                n = atual
+
+            atual = atual.next
+
+        if n == self.first and n == self.last:
+            self.first = self.last = None
+        elif n == self.first:
+            n.next.ant = None
+            self.first = n.next
+        elif n == self.last:
+            n.ant.next = None
+            self.last = n.ant
+        else:
+
+            n.next.ant = n.ant
+            n.ant.next = n.next
+
+        return n.chave
+
+
+lista = [None, None, None, None, None, None]
+
+lista[0] = nodo(1)
+lista[1] = nodo(2)
+lista[2] = nodo(3)
+lista[3] = nodo(4)
+lista[4] = nodo(5)
+lista[5] = nodo(6)
+lista[0].set_lista_nos(2, 7)
+lista[0].set_lista_nos(3, 9)
+lista[0].set_lista_nos(6, 14)
+lista[1].set_lista_nos(1, 7)
+lista[1].set_lista_nos(3, 10)
+lista[1].set_lista_nos(4, 15)
+lista[2].set_lista_nos(1, 9)
+lista[2].set_lista_nos(2, 10)
+lista[2].set_lista_nos(4, 11)
+lista[2].set_lista_nos(6, 2)
+lista[3].set_lista_nos(2, 15)
+lista[3].set_lista_nos(3, 11)
+lista[3].set_lista_nos(5, 6)
+lista[4].set_lista_nos(4, 6)
+lista[4].set_lista_nos(6, 9)
+lista[5].set_lista_nos(1, 14)
+lista[5].set_lista_nos(3, 2)
+lista[5].set_lista_nos(5, 9)
+Q = lista_q()
+
+Q.inserir(0)
+Q.inserir(1)
+Q.inserir(2)
+Q.inserir(3)
+Q.inserir(4)
+Q.inserir(5)
+
+a = 1
+
+for y in lista:
+    if y.chave != a:
+        y.distancia = inf
+    else:
+        y.distancia = 0
+
+while Q.first != None:
+    v = Q.menor()
+
+    n = 0
+
+    for u in v.lista_nos:
+        novo = v.distancia + v.pesos[n]
+        if novo < u.distancia:
+            u.distancia = novo
+        n += 1
