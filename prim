@@ -1,0 +1,135 @@
+from math import inf
+
+
+class nodo():
+
+    def __init__(self, chave):
+        self.chave = [chave]
+        self.distancia = None
+        self.lista_nos = []
+        self.pesos = []
+
+    def set_lista_nos(self, n, peso):
+        self.lista_nos.append(None)
+        for x in lista:
+            if x.chave[0] == n:
+                self.lista_nos[-1] = x
+        self.pesos.append([self.chave[0],peso])
+
+
+class nodo_q():
+
+    def __init__(self):
+        self.chave = None
+        self.next = None
+        self.ant = None
+
+
+class lista_q():
+
+    def __init__(self):
+        self.first = None
+        self.last = None
+
+    def inserir(self, n):
+        novo = nodo_q()
+        novo.chave = lista[n]
+        if self.first == None and self.last == None:
+            self.first = self.last = novo
+        else:
+            novo.ant = self.last
+            self.last.next = novo
+            self.last = novo
+
+    def menor(self):
+        n = self.first
+        atual = self.first
+
+        while atual != None:
+            if atual.chave.distancia < n.chave.distancia:
+                n = atual
+
+            atual = atual.next
+
+        if n == self.first and n == self.last:
+            self.first = self.last = None
+        elif n == self.first:
+            n.next.ant = None
+            self.first = n.next
+        elif n == self.last:
+            n.ant.next = None
+            self.last = n.ant
+        else:
+
+            n.next.ant = n.ant
+            n.ant.next = n.next
+
+        return n.chave
+
+
+lista = [None, None, None, None, None]
+lista_ligacoes = []
+
+lista[0] = nodo("1")
+lista[1] = nodo("2")
+lista[2] = nodo("3")
+lista[3] = nodo("4")
+lista[4] = nodo("5")
+
+lista[0].set_lista_nos("2", 15)
+lista[0].set_lista_nos("3", 12)
+lista[1].set_lista_nos("1", 15)
+lista[1].set_lista_nos("4", 13)
+lista[1].set_lista_nos("5", 5)
+lista[1].set_lista_nos("3", 6)
+lista[2].set_lista_nos("1", 12)
+lista[2].set_lista_nos("2", 6)
+lista[2].set_lista_nos("4", 6)
+lista[3].set_lista_nos("2", 13)
+lista[3].set_lista_nos("3", 6)
+lista[4].set_lista_nos("2", 5)
+
+
+
+
+Q = lista_q()
+
+Q.inserir(0)
+Q.inserir(1)
+Q.inserir(2)
+Q.inserir(3)
+Q.inserir(4)
+
+
+Q2 = ["1","2","3","4","5"]
+a = "1"
+
+lis = []
+
+for y in lista:
+    if y.chave != a:
+        y.distancia = inf
+    else:
+        y.distancia = 0
+v = Q.menor()
+
+while len(v.chave) < len(lista):
+    n = 0
+    menor = v.pesos[0][1]
+    for peso in v.pesos:
+
+        if peso[1] < menor:
+            menor = peso[1]
+            n = v.pesos.index(peso)
+
+    if v.lista_nos[n].chave[0] not in v.chave:
+        Q2.remove(v.lista_nos[n].chave[0])
+        v.chave.extend(v.lista_nos[n].chave)
+        v.lista_nos.extend(v.lista_nos[n].lista_nos)
+        v.pesos.extend(v.lista_nos[n].pesos)
+        lista_ligacoes.append([v.pesos[n][0],v.lista_nos[n].chave[0]])
+    else:
+        del v.lista_nos[n]
+        del v.pesos[n]
+
+print(lista_ligacoes)
